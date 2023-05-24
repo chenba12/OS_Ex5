@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 #include "pipe_line.h"
 #include "utils.h"
 
@@ -8,29 +9,60 @@ Queue queue1, queue2, queue3, queue4;
 
 void task1(void *arg) {
     task_t *task = (task_t *) arg;
-    task->number += 11;
+
+    // Generate a random 6-digit number (between 100000 and 999999)
+    task->number = (rand() % 900000) + 100000;
+
+    printf("Generated number: %d\n", task->number);
+
+    // Sleep for a thousandth of a second
+    usleep(1000);
+
+    // Push the task to the next AO
     queue_push(&queue2, task);
 }
 
 void task2(void *arg) {
     task_t *task = (task_t *) arg;
-    printf("%d\n", task->number);
-    printf("%s\n", isPrime(task->number) ? "True" : "False");
-    task->number -= 13;
+
+    // Print the number and check if it's prime
+    printf("Number: %d\n", task->number);
+    printf("Is prime: %s\n", isPrime(task->number) ? "True" : "False");
+
+    // Add 11 to the number
+    task->number += 11;
+
+    // Push the task to the next AO
     queue_push(&queue3, task);
 }
 
 void task3(void *arg) {
     task_t *task = (task_t *) arg;
-    printf("%d\n", task->number);
-    printf("%s\n", isPrime(task->number) ? "True" : "False");
-    task->number += 2;
+
+    // Print the number and check if it's prime
+    printf("Number: %d\n", task->number);
+    printf("Is prime: %s\n", isPrime(task->number) ? "True" : "False");
+
+    // Subtract 13 from the number
+    task->number -= 13;
+
+    // Push the task to the next AO
     queue_push(&queue4, task);
 }
 
 void task4(void *arg) {
     task_t *task = (task_t *) arg;
-    printf("%d\n", task->number);
+
+    // Print the received number
+    printf("Received number: %d\n", task->number);
+
+    // Add 2 to the number
+    task->number += 2;
+
+    // Print the new number
+    printf("End number: %d\n", task->number);
+
+    // No need to push the task to another AO, so free the task here
     free(task);
 }
 
