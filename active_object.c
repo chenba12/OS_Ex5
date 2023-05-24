@@ -2,22 +2,16 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <unistd.h>
-#include "queue.h"
+#include "active_object.h"
 
-typedef void (*TaskFunction)(void*);
 
-typedef struct {
-    Queue* queue;
-    pthread_t thread;
-    TaskFunction func;
-    int active;
-} ActiveObject;
 
-void* active_object_thread(void* arg) {
-    ActiveObject* activeObj = (ActiveObject*)arg;
+
+void *active_object_thread(void *arg) {
+    ActiveObject *activeObj = (ActiveObject *) arg;
 
     while (1) {
-        void* task = queue_pop(activeObj->queue);
+        void *task = queue_pop(activeObj->queue);
         if (task != NULL) {
             activeObj->func(task);
         } else {
@@ -34,7 +28,7 @@ void* active_object_thread(void* arg) {
     pthread_exit(NULL);
 }
 
-void create_active_object(ActiveObject* activeObj, Queue* queue, TaskFunction func) {
+void create_active_object(ActiveObject *activeObj, Queue *queue, TaskFunction func) {
     activeObj->queue = queue;
     activeObj->func = func;
     activeObj->active = 1;
@@ -43,11 +37,11 @@ void create_active_object(ActiveObject* activeObj, Queue* queue, TaskFunction fu
     pthread_detach(activeObj->thread);
 }
 
-Queue* get_queue(ActiveObject* activeObj) {
+Queue *get_queue(ActiveObject *activeObj) {
     return activeObj->queue;
 }
 
-void stop(ActiveObject* activeObj) {
+void stop(ActiveObject *activeObj) {
     activeObj->active = 0;
     pthread_cond_broadcast(&activeObj->queue->cond);  // Signal waiting threads to exit
     pthread_join(activeObj->thread, NULL);
@@ -63,8 +57,8 @@ void stop(ActiveObject* activeObj) {
 
 // Test function for demonstration
 
-void task_function(void* task) {
-    int* value = (int*)task;
+void task_function(void *task) {
+    int *value = (int *) task;
     printf("Task processed: %d\n", *value);
     free(value);
 }
@@ -78,7 +72,7 @@ int main() {
 
     // Enqueue some tasks
     for (int i = 1; i <= 5; i++) {
-        int* value = malloc(sizeof(int));
+        int *value = malloc(sizeof(int));
         *value = i;
         queue_push(&queue, value);
     }
