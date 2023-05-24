@@ -1,19 +1,11 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -pthread
+CFLAGS = -Wall -pedantic -std=c11 -pthread
 
-all: active_object
+st_pipeline: main.o active_object.o queue.o utils.o
+	$(CC) $(CFLAGS) -o $@ $^ -lm
 
-active_object: active_object.o queue.o utils.o
-	$(CC) $(CFLAGS) -o active_object active_object.o queue.o utils.o
-
-active_object.o: active_object.c queue.h
-	$(CC) $(CFLAGS) -c active_object.c
-
-queue.o: queue.c queue.h
-	$(CC) $(CFLAGS) -c queue.c
-
-utils.o: utils.c utils.h
-	$(CC) $(CFLAGS) -c utils.c
+%.o: %.c %.h
+	$(CC) $(CFLAGS) -c $<
 
 clean:
-	rm -f active_object active_object.o queue.o
+	rm -f *.o st_pipeline

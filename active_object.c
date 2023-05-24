@@ -63,23 +63,23 @@ void task_function(void *task) {
     free(value);
 }
 
-int main() {
-    ActiveObject activeObj;
-    Queue queue;
-
-    queue_init(&queue);
-    create_active_object(&activeObj, &queue, task_function);
-
-    // Enqueue some tasks
-    for (int i = 1; i <= 5; i++) {
-        int *value = malloc(sizeof(int));
-        *value = i;
-        queue_push(&queue, value);
-    }
-
-    printf("Before stopping active object\n");
-    stop(&activeObj);
-    printf("After stopping active object\n");
-
-    return 0;
-}
+//int main() {
+//    ActiveObject activeObj;
+//    Queue queue;
+//
+//    queue_init(&queue);
+//    create_active_object(&activeObj, &queue, task_function);
+//
+//    // Enqueue some tasks
+//    for (int i = 1; i <= 5; i++) {
+//        int *value = malloc(sizeof(int));
+//        *value = i;
+//        queue_push(&queue, value);
+//    }
+//
+//    printf("Before stopping active object\n");
+//    stop(&activeObj);
+//    printf("After stopping active object\n");
+//
+//    return 0;
+//}
