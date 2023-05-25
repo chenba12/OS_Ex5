@@ -1,12 +1,25 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <pthread.h>
 #include <unistd.h>
 #include "active_object.h"
 
+/**
+ * creates a new active object and create a new thread for it
+ * @param activeObj the active object to init
+ * @param queue the queue for the active object
+ * @param func the function to execute
+ */
+void create_active_object(ActiveObject *activeObj, Queue *queue, TaskFunction func) {
+    activeObj->queue = queue;
+    activeObj->func = func;
+    activeObj->active = 1;
 
-
-
+    pthread_create(&activeObj->thread, NULL, active_object_thread, activeObj);
+    pthread_detach(activeObj->thread);
+}
+/**
+ * the thread loop of the active object
+ * @param arg active object
+ */
 void *active_object_thread(void *arg) {
     ActiveObject *activeObj = (ActiveObject *) arg;
 
@@ -28,19 +41,11 @@ void *active_object_thread(void *arg) {
     pthread_exit(NULL);
 }
 
-void create_active_object(ActiveObject *activeObj, Queue *queue, TaskFunction func) {
-    activeObj->queue = queue;
-    activeObj->func = func;
-    activeObj->active = 1;
-
-    pthread_create(&activeObj->thread, NULL, active_object_thread, activeObj);
-    pthread_detach(activeObj->thread);
-}
-
-Queue *get_queue(ActiveObject *activeObj) {
-    return activeObj->queue;
-}
-
+/**
+ * stops the active object
+ * waits for it to finish whatever task it does and then close it
+ * @param activeObj
+ */
 void stop(ActiveObject *activeObj) {
     activeObj->active = 0;
     pthread_cond_broadcast(&activeObj->queue->cond);  // Signal waiting threads to exit
@@ -54,32 +59,3 @@ void stop(ActiveObject *activeObj) {
 
     pthread_mutex_unlock(&activeObj->queue->mutex);
 }
-
-// Test function for demonstration
-
-void task_function(void *task) {
-    int *value = (int *) task;
-    printf("Task processed: %d\n", *value);
-    free(value);
-}
-
-//int main() {
-//    ActiveObject activeObj;
-//    Queue queue;
-//
-//    queue_init(&queue);
-//    create_active_object(&activeObj, &queue, task_function);
-//
-//    // Enqueue some tasks
-//    for (int i = 1; i <= 5; i++) {
-//        int *value = malloc(sizeof(int));
-//        *value = i;
-//        queue_push(&queue, value);
-//    }
-//
-//    printf("Before stopping active object\n");
-//    stop(&activeObj);
-//    printf("After stopping active object\n");
-//
-//    return 0;
-//}

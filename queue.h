@@ -16,10 +16,8 @@ typedef struct {
 
 void queue_init(Queue *queue);
 
-void queue_destroy(Queue *queue);
-
 void queue_push(Queue *queue, void *item);
 
 void *queue_pop(Queue *queue);
 
-#endif  /* QUEUE_H */
+#endif

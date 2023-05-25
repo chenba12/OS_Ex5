@@ -1,6 +1,8 @@
 CC = gcc
 CFLAGS = -Wall -pedantic -std=c11 -pthread
 
+all: st_pipeline
+
 st_pipeline: main.o active_object.o queue.o utils.o pipe_line.o
 	$(CC) $(CFLAGS) -o $@ $^ -lm
 

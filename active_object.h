@@ -16,10 +16,6 @@ void *active_object_thread(void *arg);
 
 void create_active_object(ActiveObject *activeObj, Queue *queue, TaskFunction func);
 
-Queue *get_queue(ActiveObject *activeObj);
-
 void stop(ActiveObject *activeObj);
-
-void task_function(void *task);
 
 #endif

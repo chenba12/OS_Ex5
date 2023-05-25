@@ -7,62 +7,61 @@
 ActiveObject ao1, ao2, ao3, ao4;
 Queue queue1, queue2, queue3, queue4;
 
+/**
+ * First AO task
+ * init the srand with the seed once
+ * and generate random numbers
+ * @param arg task data
+ */
 void task1(void *arg) {
     task_t *task = (task_t *) arg;
 
-    // Generate a random 6-digit number (between 100000 and 999999)
+    static int initialized = 0;
+    if (!initialized) {
+        srand(task->seed);
+        initialized = 1;
+    }
     task->number = (rand() % 900000) + 100000;
-
     printf("Generated number: %d\n", task->number);
-
-    // Sleep for a thousandth of a second
     usleep(1000);
-
-    // Push the task to the next AO
     queue_push(&queue2, task);
 }
 
+/**
+ * Second AO task
+ * check if the number is a prime number and add 11 to it
+ * @param arg task data
+ */
 void task2(void *arg) {
     task_t *task = (task_t *) arg;
-
-    // Print the number and check if it's prime
     printf("Number: %d\n", task->number);
     printf("Is prime: %s\n", isPrime(task->number) ? "True" : "False");
-
-    // Add 11 to the number
     task->number += 11;
-
-    // Push the task to the next AO
     queue_push(&queue3, task);
 }
 
+/**
+ * Third AO task check if the new number is a prime and subtract 13 from it
+ * @param arg task data
+ */
 void task3(void *arg) {
     task_t *task = (task_t *) arg;
-
-    // Print the number and check if it's prime
     printf("Number: %d\n", task->number);
     printf("Is prime: %s\n", isPrime(task->number) ? "True" : "False");
-
-    // Subtract 13 from the number
     task->number -= 13;
-
-    // Push the task to the next AO
     queue_push(&queue4, task);
 }
-
+/**
+ * Fourth AO task check if the new number is a prime and add 2 to it
+ * we should be back at the starting number
+ * free task
+ * @param arg task data
+ */
 void task4(void *arg) {
     task_t *task = (task_t *) arg;
-
-    // Print the received number
     printf("Received number: %d\n", task->number);
-
-    // Add 2 to the number
     task->number += 2;
-
-    // Print the new number
     printf("End number: %d\n", task->number);
-
-    // No need to push the task to another AO, so free the task here
     free(task);
 }
 
@@ -80,8 +79,6 @@ void setup_pipeline(int N, int seed) {
 
     for (int i = 0; i < N; i++) {
         task_t *task = malloc(sizeof(task_t));
-        task->number = (rand() % 900000) + 100000; // Generate a 6-digit number
-        task->is_prime = isPrime(task->number);
         queue_push(&queue1, task);
     }
 }
@@ -91,4 +88,5 @@ void stop_pipeline() {
     stop(&ao2);
     stop(&ao3);
     stop(&ao4);
+
 }
