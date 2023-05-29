@@ -3,6 +3,6 @@
 
 #include "stdbool.h"
 
-bool isPrime(int num);
+bool isPrime(unsigned int num);
 
 #endif

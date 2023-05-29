@@ -8,7 +8,7 @@
  * @param queue the queue for the active object
  * @param func the function to execute
  */
-void create_active_object(ActiveObject *activeObj, Queue *queue, TaskFunction func) {
+void CreateActiveObject(ActiveObject *activeObj, Queue *queue, TaskFunction func) {
     activeObj->queue = queue;
     activeObj->func = func;
     activeObj->active = 1;
@@ -16,6 +16,11 @@ void create_active_object(ActiveObject *activeObj, Queue *queue, TaskFunction fu
     pthread_create(&activeObj->thread, NULL, active_object_thread, activeObj);
     pthread_detach(activeObj->thread);
 }
+
+Queue *get_queue(ActiveObject *activeObj) {
+    return activeObj->queue;
+}
+
 /**
  * the thread loop of the active object
  * @param arg active object
@@ -59,3 +64,4 @@ void stop(ActiveObject *activeObj) {
 
     pthread_mutex_unlock(&activeObj->queue->mutex);
 }
+

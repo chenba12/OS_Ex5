@@ -14,7 +14,9 @@ typedef struct {
 
 void *active_object_thread(void *arg);
 
-void create_active_object(ActiveObject *activeObj, Queue *queue, TaskFunction func);
+Queue *get_queue(ActiveObject *activeObj);
+
+void CreateActiveObject(ActiveObject *activeObj, Queue *queue, TaskFunction func);
 
 void stop(ActiveObject *activeObj);
 

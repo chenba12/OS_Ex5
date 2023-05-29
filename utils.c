@@ -1,7 +1,7 @@
 #include "utils.h"
 #include <math.h>
 
-bool isPrime(int number) {
+bool isPrime(unsigned int number) {
     if (number < 2)
         return false;
 
@@ -10,6 +10,7 @@ bool isPrime(int number) {
 
     if (number % 2 == 0)
         return false;
+
 
     double sqrt_num = sqrt(number);
     for (unsigned int i = 3; i <= sqrt_num; i += 2) {

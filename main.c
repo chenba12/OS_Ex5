@@ -1,6 +1,4 @@
 #include <stdlib.h>
-#include <unistd.h>
-#include <time.h>
 #include <stdio.h>
 #include "pipe_line.h"
 
@@ -17,13 +15,13 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    // Parse arguments
     int N = atoi(argv[1]);
-    int seed = (argc == 3) ? atoi(argv[2]) : time(NULL);
+    int seed = (argc == 3) ? atoi(argv[2]) : NO_Seed;
 
-    setup_pipeline(N, seed);
+    setupPipeline(N, seed);
 
-    stop_pipeline();
+    stopPipeline();
+
 
     return 0;
 }

@@ -12,7 +12,6 @@ void queue_init(Queue *queue) {
     queue->count = 0;
     pthread_mutex_init(&queue->mutex, NULL);
     pthread_cond_init(&queue->cond, NULL);
-
 }
 /**
  * push a new item to the queue
